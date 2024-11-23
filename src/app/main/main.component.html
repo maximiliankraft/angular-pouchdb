@@ -1,0 +1,49 @@
+<div class="container">
+    <h1>Todo List</h1>
+    
+    <div class="status-bar">
+      <span [class.online]="online$ | async">
+        {{ (online$ | async) ? 'Online' : 'Offline' }}
+      </span>
+      <button (click)="promptInstall()" *ngIf="showInstallPrompt">
+        Add to Home Screen
+      </button>
+    </div>
+
+    <div class="add-todo">
+      <input
+        #todoInput
+        type="text"
+        placeholder="Add new todo"
+        (keyup.enter)="addTodo(todoInput.value); todoInput.value = ''"
+      >
+      <button (click)="addTodo(todoInput.value); todoInput.value = ''">
+        Add
+      </button>
+    </div>
+
+    <ul class="todo-list">
+      <li *ngFor="let todo of todos$ | async" [class.completed]="todo.completed">
+        <div class="todo-item">
+          <input
+            type="checkbox"
+            [checked]="todo.completed"
+            (change)="toggleTodo(todo)"
+          >
+          <span *ngIf="!todo.editing">{{ todo.title }}</span>
+          <input
+            *ngIf="todo.editing"
+            type="text"
+            [value]="todo.title"
+            (blur)="updateTodoTitle(todo, $event)"
+            (keyup.enter)="updateTodoTitle(todo, $event)"
+            autofocus
+          >
+        </div>
+        <div class="actions">
+          <button (click)="todo.editing = true">Edit</button>
+          <button (click)="deleteTodo(todo)">Delete</button>
+        </div>
+      </li>
+    </ul>
+  </div>

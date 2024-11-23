@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  nginx:
+    # todo move to dockerfile
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dist/demo/browser:/usr/share/nginx/html
+    depends_on:
+      - couchdb
+
+  couchdb:
+    image: couchdb:latest
+    env_file:
+      - couchdb.env
+      # COUCHDB_USER
+      # COUCHDB_PASSWORD
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+      - ./local.ini:/opt/couchdb/etc/local.ini
+    ports:
+      - "5984:5984"
+
+volumes:
+  couchdb_data:
